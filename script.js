@@ -41,6 +41,9 @@ function lesson(subject, type, room, teachers) {
 
 /* ==========================================
    ДВА ПРЕДМЕТИ В ОДНІЙ КОМІРЦІ
+
+   first  = ЧИСЕЛЬНИК
+   second = ЗНАМЕННИК
 ========================================== */
 
 function twoLessons(first, second) {
@@ -55,7 +58,9 @@ function twoLessons(first, second) {
 
 
 /* ==========================================
-   СПІЛЬНА ПАРА ДЛЯ III-IV
+   СПІЛЬНА ПАРА ДЛЯ ПОТОКУ
+
+   НІКОЛИ НЕ ПЕРЕМИКАЄТЬСЯ
 ========================================== */
 
 function doublePair(subject, type, room, teachers) {
@@ -283,7 +288,6 @@ const PMK21 = {
 };
 
 
-
 /* ==========================================
    ПМК-22
 ========================================== */
@@ -489,7 +493,6 @@ const PMK22 = {
     ]
 
 };
-
 
 
 /* ==========================================
@@ -699,7 +702,6 @@ const PMK23 = {
 };
 
 
-
 /* ==========================================
    ВСІ ГРУПИ
 ========================================== */
@@ -713,7 +715,6 @@ const schedules = {
 };
 
 
-
 /* ==========================================
    ПОТОЧНІ ЗНАЧЕННЯ
 ========================================== */
@@ -722,6 +723,102 @@ let currentGroup = "ПМК-21";
 
 let currentDay = "Понеділок";
 
+
+/* ==========================================
+   ВИЗНАЧЕННЯ ЧИСЕЛЬНИКА / ЗНАМЕННИКА
+========================================== */
+
+/*
+   01.09.2026 = перший навчальний тиждень
+   Перший тиждень = ЧИСЕЛЬНИК
+*/
+
+const firstWeekDate = new Date(2026, 8, 1);
+
+let weekMode = "auto";
+
+
+function getWeekType() {
+
+    /* Ручний вибір */
+
+    if (weekMode === "numerator") {
+
+        return "numerator";
+
+    }
+
+
+    if (weekMode === "denominator") {
+
+        return "denominator";
+
+    }
+
+
+    /* Автоматичний режим */
+
+    const today = new Date();
+
+
+    /* Беремо тільки дату */
+
+    const currentDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+    );
+
+
+    const firstDate = new Date(
+        firstWeekDate.getFullYear(),
+        firstWeekDate.getMonth(),
+        firstWeekDate.getDate()
+    );
+
+
+    /* Різниця між датами */
+
+    const difference =
+        currentDate - firstDate;
+
+
+    /*
+       Кількість повних тижнів
+       від 01.09.2026
+    */
+
+    const weeks =
+        Math.floor(
+            difference /
+            (7 * 24 * 60 * 60 * 1000)
+        );
+
+
+    /*
+       0 = ЧИСЕЛЬНИК
+       1 = ЗНАМЕННИК
+       2 = ЧИСЕЛЬНИК
+       3 = ЗНАМЕННИК
+       ...
+    */
+
+    if (weeks % 2 === 0) {
+
+        return "numerator";
+
+    } else {
+
+        return "denominator";
+
+    }
+
+}
+
+
+/* ==========================================
+   ЕЛЕМЕНТИ HTML
+========================================== */
 
 const groupSelect =
     document.getElementById("groupSelect");
@@ -733,7 +830,6 @@ const schedule =
     document.getElementById("schedule");
 
 
-
 /* ==========================================
    ДНІ
 ========================================== */
@@ -742,16 +838,23 @@ function renderDays() {
 
     dayNav.innerHTML = "";
 
+
     days.forEach(function(day) {
 
         const button =
             document.createElement("button");
 
-        button.className = "day-btn";
+
+        button.className =
+            "day-btn";
+
 
         if (day === currentDay) {
+
             button.classList.add("active");
+
         }
+
 
         button.textContent = day;
 
@@ -777,7 +880,6 @@ function renderDays() {
 }
 
 
-
 /* ==========================================
    HTML ПРЕДМЕТА
 ========================================== */
@@ -786,12 +888,17 @@ function lessonHTML(item) {
 
     let html = "";
 
+
+    /* Назва предмета */
+
     html += `
         <div class="subject">
             ${item.subject}
         </div>
     `;
 
+
+    /* Тип заняття */
 
     if (item.type) {
 
@@ -804,6 +911,8 @@ function lessonHTML(item) {
     }
 
 
+    /* Аудиторія */
+
     if (item.room) {
 
         html += `
@@ -814,6 +923,8 @@ function lessonHTML(item) {
 
     }
 
+
+    /* Викладач */
 
     if (item.teachers) {
 
@@ -831,15 +942,15 @@ function lessonHTML(item) {
 }
 
 
-
 /* ==========================================
    ВМІСТ ПАРИ
 ========================================== */
 
 function createLessonContent(item) {
 
-
-    /* Порожня пара */
+    /* ==========================================
+       ПОРОЖНЯ ПАРА
+    ========================================== */
 
     if (item === null) {
 
@@ -852,56 +963,65 @@ function createLessonContent(item) {
     }
 
 
-    /* Два предмети в одній комірці */
+    /* ==========================================
+       ЧИСЕЛЬНИК / ЗНАМЕННИК
+    ========================================== */
 
     if (item.multiple) {
 
+        const weekType =
+            getWeekType();
+
+
+        let selectedLesson;
+
+
+        /*
+           ЧИСЕЛЬНИК
+           показує first
+        */
+
+        if (weekType === "numerator") {
+
+            selectedLesson =
+                item.first;
+
+        }
+
+
+        /*
+           ЗНАМЕННИК
+           показує second
+        */
+
+        else {
+
+            selectedLesson =
+                item.second;
+
+        }
+
+
         return `
-
-            <div class="lesson-content split">
-
-                <div class="branch">
-
-                    <div class="branch-title">
-                        Запис 1
-                    </div>
-
-                    ${lessonHTML(item.first)}
-
-                </div>
-
-
-                <div class="branch">
-
-                    <div class="branch-title">
-                        Запис 2
-                    </div>
-
-                    ${lessonHTML(item.second)}
-
-                </div>
-
+            <div class="lesson-content">
+                ${lessonHTML(selectedLesson)}
             </div>
-
         `;
 
     }
 
 
-    /* Звичайна пара */
+    /* ==========================================
+       ЗВИЧАЙНА ПАРА
+    ========================================== */
 
     return `
-
         <div class="lesson-content">
-
             ${lessonHTML(item)}
-
         </div>
-
     `;
 
 }
-
 
 
 /* ==========================================
@@ -918,21 +1038,23 @@ function renderSchedule() {
 
 
     /*
-       ЗАВЖДИ ВИВОДИМО 5 ПАР.
-
-       Не робимо filter().
-       Не видаляємо null.
-       Тому номер пари завжди правильний.
+       Завжди показуємо 5 пар.
+       Навіть якщо там null.
     */
 
     for (let i = 0; i < 5; i++) {
 
-        const item = lessons[i];
+        const item =
+            lessons[i];
 
 
         const card =
             document.createElement("article");
 
+
+        /*
+           Якщо пари немає
+        */
 
         if (item === null) {
 
@@ -974,7 +1096,6 @@ function renderSchedule() {
 }
 
 
-
 /* ==========================================
    ЗМІНА ГРУПИ
 ========================================== */
@@ -986,17 +1107,160 @@ groupSelect.addEventListener(
         currentGroup =
             groupSelect.value;
 
+
         renderSchedule();
 
     }
 );
 
 
+/* ==========================================
+   ІНФОРМАЦІЯ ПРО ТИЖДЕНЬ
+========================================== */
+
+function updateWeekInfo() {
+
+    const weekInfo =
+        document.getElementById("weekInfo");
+
+
+    const autoWeekBtn =
+        document.getElementById("autoWeekBtn");
+
+
+    const numeratorBtn =
+        document.getElementById("numeratorBtn");
+
+
+    const denominatorBtn =
+        document.getElementById("denominatorBtn");
+
+
+    const weekType =
+        getWeekType();
+
+
+    /* ==========================================
+       ТЕКСТ
+    ========================================== */
+
+    if (weekType === "numerator") {
+
+        weekInfo.textContent =
+            "📚 Поточний тиждень: ЧИСЕЛЬНИК";
+
+    } else {
+
+        weekInfo.textContent =
+            "📚 Поточний тиждень: ЗНАМЕННИК";
+
+    }
+
+
+    /* ==========================================
+       СКИДАЄМО ACTIVE
+    ========================================== */
+
+    autoWeekBtn.classList.remove("active");
+
+    numeratorBtn.classList.remove("active");
+
+    denominatorBtn.classList.remove("active");
+
+
+    /* ==========================================
+       ВСТАНОВЛЮЄМО ACTIVE
+    ========================================== */
+
+    if (weekMode === "auto") {
+
+        autoWeekBtn.classList.add("active");
+
+    }
+
+
+    if (weekMode === "numerator") {
+
+        numeratorBtn.classList.add("active");
+
+    }
+
+
+    if (weekMode === "denominator") {
+
+        denominatorBtn.classList.add("active");
+
+    }
+
+}
+
 
 /* ==========================================
-   ЗАПУСК
+   КНОПКА АВТОМАТИЧНО
+========================================== */
+
+document
+    .getElementById("autoWeekBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            weekMode = "auto";
+
+            updateWeekInfo();
+
+            renderSchedule();
+
+        }
+    );
+
+
+/* ==========================================
+   КНОПКА ЧИСЕЛЬНИК
+========================================== */
+
+document
+    .getElementById("numeratorBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            weekMode = "numerator";
+
+            updateWeekInfo();
+
+            renderSchedule();
+
+        }
+    );
+
+
+/* ==========================================
+   КНОПКА ЗНАМЕННИК
+========================================== */
+
+document
+    .getElementById("denominatorBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            weekMode = "denominator";
+
+            updateWeekInfo();
+
+            renderSchedule();
+
+        }
+    );
+
+
+/* ==========================================
+   ЗАПУСК САЙТУ
 ========================================== */
 
 renderDays();
 
 renderSchedule();
+
+updateWeekInfo();
