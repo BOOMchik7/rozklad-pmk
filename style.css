@@ -1,0 +1,244 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f5f7;
+    color: #20242a;
+}
+
+
+/* HEADER */
+
+header {
+    background: #20242a;
+    color: white;
+    padding: 30px 0;
+}
+
+.container {
+    width: min(1100px, calc(100% - 30px));
+    margin: 0 auto;
+}
+
+h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+}
+
+header p {
+    margin: 0 0 20px;
+    opacity: 0.8;
+}
+
+label {
+    margin-right: 8px;
+}
+
+select {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+
+/* ДНІ */
+
+.day-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 22px 0;
+}
+
+.day-btn {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+
+    background: white;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    white-space: nowrap;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.day-btn:hover {
+    background: #e9edf1;
+}
+
+.day-btn.active {
+    background: #20242a;
+    color: white;
+}
+
+
+/* РОЗКЛАД */
+
+.schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding-bottom: 30px;
+}
+
+
+/* ОДНА ПАРА */
+
+.lesson {
+    display: grid;
+
+    grid-template-columns: 150px 1fr;
+
+    background: white;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+
+    min-height: 105px;
+}
+
+
+/* НОМЕР ПАРИ */
+
+.pair-info {
+    background: #e9edf1;
+
+    padding: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+.pair-number {
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+}
+
+.time {
+    font-size: 14px;
+
+    color: #5c636b;
+}
+
+
+/* ІНФОРМАЦІЯ ПРО ПРЕДМЕТ */
+
+.lesson-content {
+    padding: 16px 20px;
+}
+
+.subject {
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 9px;
+}
+
+.type,
+.room {
+    display: inline-block;
+
+    margin-right: 12px;
+
+    color: #5c636b;
+
+    font-size: 14px;
+}
+
+
+/* ПУСТА ПАРА */
+
+.empty .lesson-content {
+    display: flex;
+
+    align-items: center;
+
+    color: #888;
+}
+
+
+/* ЧИСЕЛЬНИК / ЗНАМЕННИК */
+
+.split {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 20px;
+}
+
+.branch {
+    padding-right: 10px;
+}
+
+.branch + .branch {
+    border-left: 1px solid #ddd;
+
+    padding-left: 20px;
+}
+
+.branch-title {
+    font-size: 12px;
+
+    font-weight: bold;
+
+    color: #777;
+
+    margin-bottom: 6px;
+
+    text-transform: uppercase;
+}
+
+
+/* ТЕЛЕФОН */
+
+@media (max-width: 650px) {
+
+    .lesson {
+        grid-template-columns: 95px 1fr;
+    }
+
+    .pair-info {
+        padding: 12px;
+    }
+
+    .lesson-content {
+        padding: 14px;
+    }
+
+    .split {
+        grid-template-columns: 1fr;
+
+        gap: 12px;
+    }
+
+    .branch + .branch {
+        border-left: none;
+
+        border-top: 1px solid #ddd;
+
+        padding-left: 0;
+
+        padding-top: 12px;
+    }
+
+}
