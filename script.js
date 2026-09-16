@@ -721,8 +721,25 @@ const schedules = {
 
 let currentGroup = "ПМК-21";
 
-let currentDay = "Понеділок";
 
+
+function getCurrentDay() {
+
+    const today = new Date();
+    const dayNumber = today.getDay();
+
+    const dayMap = {
+        1: "Понеділок",
+        2: "Вівторок",
+        3: "Середа",
+        4: "Четвер",
+        5: "П'ятниця"
+    };
+
+    return dayMap[dayNumber] || "Понеділок";
+}
+
+let currentDay = getCurrentDay();
 
 /* ==========================================
    ВИЗНАЧЕННЯ ЧИСЕЛЬНИКА / ЗНАМЕННИКА
